@@ -1,0 +1,13 @@
+*.log
+*.aux
+*.toc
+*.pdf
+*.idx
+*.ent
+*.tex.swp
+*.otf
+OLD/
+/fonts/*.otf
+/fonts/*.ttf
+/_minted
+*.gz

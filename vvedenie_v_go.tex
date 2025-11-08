@@ -1,0 +1,297 @@
+\documentclass[a5paper, 11pt, twoside, onecolumn, openany]{memoir}
+
+%%% PACKAGES 
+%%%------------------------------------------------------------------------
+
+\usepackage[greek,english,main=russian]{babel}
+\usepackage[final]{microtype} % Less badboxes
+\usepackage{xcolor}
+\usepackage{fontspec}
+\usepackage{bookmark}
+\usepackage{footnotehyper}
+\usepackage{amsmath,amssymb,mathtools} % Math
+\usepackage{graphicx} % Include figures
+\usepackage{indentfirst}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\usepackage{minted}
+\sloppy
+\raggedbottom
+
+\usemintedstyle{borland}
+\setmonofont{Menlo}
+
+\color{gray!20!black}
+
+\definecolor{roseRed}{rgb}{1.0, 0.0, 0.3}
+
+\setmainfont[LetterSpace=4.5]{Literaturnaja}[
+  Path = ./fonts/,
+  ItalicFont = Literaturnaja-Italic.otf,
+  UprightFont = Literaturnaja.otf,
+  BoldFont = Literaturnaja-Bold.otf,
+  BoldItalicFont = Literaturnaja-Italic.otf,
+]
+
+\newfontfamily\headingfont{Akademicheskaja}[
+  Path = ./fonts/,
+  Extension = .ttf,
+  UprightFeatures = {RawFeature=+liga},
+  LetterSpace = 5,
+]
+
+\linespread{0.8}\selectfont
+
+
+\widowpenalty=50000      % избегать висячих строк (1 слово внизу страницы)
+\clubpenalty=50000       % избегать одиночных строк вверху страницы
+\brokenpenalty=50000     % избегать переносов после заголовков
+
+%%% PAGE LAYOUT 
+%%%------------------------------------------------------------------------
+
+\setlrmarginsandblock{8mm}{12mm}{*} % внешний край, отступ у корешка (слева у чётных)
+\setulmarginsandblock{12mm}{16mm}{*} % верх и низ
+\checkandfixthelayout
+
+%%% SECTIONAL DIVISIONS
+%%%------------------------------------------------------------------------
+
+\maxsecnumdepth{section} % Subsections (and higher) are numbered
+\setsecnumdepth{section}
+
+\makeatletter %
+\makechapterstyle{standard}{
+  \setlength{\beforechapskip}{0\baselineskip}
+  \setlength{\midchapskip}{1\baselineskip}
+  \setlength{\afterchapskip}{2\baselineskip}
+  \renewcommand{\chapterheadstart}{\vspace*{\beforechapskip}}
+  \renewcommand{\chapnamefont}{\centering\normalfont\Large}
+  \renewcommand{\printchaptername}{\chapnamefont \@chapapp}
+  \renewcommand{\chapternamenum}{\space}
+  \renewcommand{\chapnumfont}{\normalfont\Large}
+  \renewcommand{\printchapternum}{\chapnumfont \thechapter}
+  \renewcommand{\afterchapternum}{\par\nobreak\vskip \midchapskip}
+  \renewcommand{\printchapternonum}{\vspace*{\midchapskip}\vspace*{5mm}}
+  \renewcommand{\chaptitlefont}{\centering\bfseries\LARGE}
+  \renewcommand{\printchaptertitle}[1]{\chaptitlefont ##1}
+  \renewcommand{\afterchaptertitle}{\par\nobreak\vskip \afterchapskip}
+
+  % Part titles
+  \renewcommand{\beforepartskip}{}
+  \renewcommand{\afterpartskip}{\bigskip}
+
+  \renewcommand{\clearforchapter}{}
+}
+\makeatother
+
+\chapterstyle{standard}
+
+\setsecheadstyle{\headingfont\Large\bfseries\centering\MakeUppercase}
+\setsubsecheadstyle{\headingfont\Large\bfseries}
+\setsubsubsecheadstyle{\headingfont\large\bfseries}
+\setparaheadstyle{\normalfont\normalsize\bfseries}
+\setparaindent{0pt}\setafterparaskip{0pt}
+\preto\section{\Needspace{9\baselineskip}}
+
+%%% FLOATS AND CAPTIONS
+%%%------------------------------------------------------------------------
+
+\makeatletter % You do not need to write [htpb] all the time
+\renewcommand\fps@figure{htbp}
+\renewcommand\fps@table{htbp}
+\makeatother
+
+\captiondelim{\space } % A space between caption name and text
+\captionnamefont{\small\bfseries} % Font of the caption name
+\captiontitlefont{\small\normalfont} % Font of the caption text
+
+\changecaptionwidth          % Change the width of the caption
+\captionwidth{1\textwidth} %
+
+%%% ABSTRACT
+%%%------------------------------------------------------------------------
+
+\renewcommand{\abstractnamefont}{\normalfont\small\bfseries} % Font of abstract title
+\setlength{\absleftindent}{0.1\textwidth} % Width of abstract
+\setlength{\absrightindent}{\absleftindent}
+
+%%% HEADER AND FOOTER 
+%%%------------------------------------------------------------------------
+
+\makepagestyle{standard} % Make standard pagestyle
+
+\makeatletter                 % Define standard pagestyle
+\makeevenfoot{standard}{}{}{} %
+\makeoddfoot{standard}{}{}{}  %
+\makeevenhead{standard}{\bfseries\thepage\normalfont\qquad\small\leftmark}{}{}
+\makeoddhead{standard}{}{}{\small\rightmark\qquad\bfseries\thepage}
+% \makeheadrule{standard}{\textwidth}{\normalrulethickness}
+\makeatother                  %
+
+\makeatletter
+\makepsmarks{standard}{
+\createmark{chapter}{both}{nonumber}{\@chapapp\ }{ \quad }
+\createmark{chapter}{right}{nonumber}{}{ \quad }
+\createmark{section}{right}{nonumber}{}{ \quad }
+\createmark{subsection}{right}{nonumber}{}{ \quad }
+\createplainmark{toc}{both}{\contentsname}
+\createplainmark{lof}{both}{\listfigurename}
+\createplainmark{lot}{both}{\listtablename}
+\createplainmark{bib}{both}{\bibname}
+\createplainmark{index}{both}{\indexname}
+\createplainmark{glossary}{both}{\glossaryname}
+}
+\makeatother                               %
+
+\makepagestyle{chap} % Make new chapter pagestyle
+
+\makeatletter
+\makeevenfoot{chap}{}{}{} % Define new chapter pagestyle
+\makeoddfoot{chap}{}{}{}  %
+\makeevenhead{chap}{}{}{}   %
+\makeoddhead{chap}{}{}{}    %
+% \makeheadrule{chap}{\textwidth}{\normalrulethickness}
+\makeatother
+
+\nouppercaseheads
+\pagestyle{standard}               % Choosing pagestyle and chapter pagestyle
+\aliaspagestyle{chapter}{chap} %
+
+% Глобально для itemize и enumerate сразу
+\setlist[itemize,enumerate]{
+  topsep=3pt,      % расстояние сверху
+  partopsep=0pt,   % дополнительный отступ когда список сразу после пустой строки
+  parsep=0pt,      % отступ между абзацами внутри списка
+  itemsep=2pt      % межстрочный внутри списка
+}
+
+\renewcommand{\labelitemi}{%
+  \raisebox{-0.15ex}{\small\textbullet}%
+}
+
+\setlist[itemize]{leftmargin=0.6cm}
+\setlist[enumerate]{leftmargin=0.8cm}
+
+%%% СНОСКИ
+\makeatletter
+\renewcommand{\@makefntext}[1]{%
+  \noindent\makebox[2.5em][r]{\@makefnmark\hspace{0.3em}}#1%
+}
+\makeatother
+
+\makeatletter
+\newcommand{\nnbsp}{{\spaceskip=0.3em\relax~}}
+\renewcommand{\@makefnmark}{\nnbsp\raisebox{0.6ex}{\fontsize{6pt}{6pt}\selectfont\thefootnote}}
+\makeatother
+
+%%% NEW COMMANDS
+%%%------------------------------------------------------------------------
+
+\newcommand{\wide}[1]{{%
+  \addfontfeature{LetterSpace=8}% ← межбуквенный интервал
+  \spaceskip=1.5\fontdimen2\font plus .1em minus .1em\relax % ← шире пробел
+  #1}}
+
+\newcommand{\wider}[1]{{%
+  \addfontfeature{LetterSpace=32}% ← межбуквенный интервал
+  \spaceskip=1.5\fontdimen2\font plus .1em minus .1em\relax % ← шире пробел
+  #1}}
+
+\maxtocdepth{subsubsection} % ToC depth
+\settocdepth{subsubsection}
+
+\AtEndDocument{\addtocontents{toc}{\par}} % Add a \par to the end of the TOC
+
+\usepackage{hyperref}   % Internal hyperlinks
+\hypersetup{
+  pdfborder={0 0 0},      % No borders around internal hyperlinks
+  pdfauthor={РФЛ} % author
+}
+\usepackage{memhfixc}   %
+
+\author{Ефимов А. И.}
+\title{Введение в язык Го}
+\date{}
+
+\renewcommand{\partnumberline}[1]{} % Remove part number in ToC
+\renewcommand{\cftpartdotsep}{\cftdotsep} % Part dots in ToC
+\renewcommand{\chapternumberline}[1]{} % Remove chapter number in ToC
+\renewcommand{\cftchapterdotsep}{\cftdotsep} % Chapter dots in ToC
+
+\renewcommand{\printpartname}{}
+\renewcommand{\thepart}{}
+
+\renewcommand{\printchaptername}{}
+\renewcommand{\thechapter}{}
+
+\makeatletter
+\renewcommand{\@seccntformat}[1]{}
+\makeatother
+
+\newcommand{\binokl}{\raisebox{-0.2ex}{\includegraphics[height=0.7em]{binokl.png}}}
+
+\newminted[gocode]{go}{
+  fontsize=\footnotesize,
+  linenos,
+  breaklines,
+  frame=lines,
+  framesep=2mm,
+  numbersep=8pt,
+  xleftmargin=12pt
+}
+
+% Remove section numbers in ToC
+\let\oldcftsf\cftsectionfont% save definition of \cftsectionfont
+\let\oldcftspn\cftsectionafterpnum% and of \cftsectionafterpnum
+\renewcommand*{\cftsectionfont}{%
+\let\oldnl\numberline% save definition of \numberline
+\renewcommand*{\numberline}[1]{}% change it
+\oldcftsf} % use original \cftsectionfont
+\renewcommand*{\cftsectionafterpnum}{%
+\let\numberline\oldnl% % restore orginal \numberline
+\oldcftspn} % use original \cftsectionafterpnum
+\settocdepth{subsection}
+
+\AtBeginDocument{
+  \fontsize{10.5pt}{13.7pt}\selectfont
+}
+
+\begin{document}
+
+\frontmatter
+\pagestyle{empty}
+
+\begin{adjustwidth}{0.75cm}{}
+{\centering
+  ~\vspace{35pt} \\
+  {\headingfont\Huge\wide{ВВЕДЕНИЕ}} \\
+  \vspace{15pt}
+  {\headingfont\Huge\wide{В ЯЗЫК ГО}} \\
+  \vspace{40pt}
+  \includegraphics[width=6cm]{berjoza.jpg} \\
+  \vspace{35pt}
+  \textit{\headingfont\wide{ИЗДАТЕЛЬСТВО \\
+ТЕХНИКО\hspace{0.2ex}\raisebox{0.3ex}{-}\hspace{0.2ex}ТЕОРЕТИЧЕСКОЙ
+ЛИТЕРАТУРЫ \\
+РИЖСКОГО ОКБ КОМПИЛЯТОРОСТРОЕНИЯ}} \\
+  \vspace{13pt}
+  \textit{\headingfont\wider{~\!\!РИГА~~~~~~\,\,~~2025~~}} \\
+\par}
+\end{adjustwidth}
+
+\renewcommand{\contentsname}{{\headingfont Оглавление}}
+
+\clearpage
+{\baselineskip=25pt
+\tableofcontents*
+}
+
+\pagestyle{plain}
+
+\mainmatter
+
+\include{text/text.tex}
+
+\end{document}
