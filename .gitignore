@@ -4,10 +4,10 @@
 *.pdf
 *.idx
 *.ent
-*.tex.swp
-*.otf
+*.swp
 OLD/
 /fonts/*.otf
 /fonts/*.ttf
 /_minted
+*.minted
 *.gz

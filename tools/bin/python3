@@ -1,0 +1,19 @@
+#!/bin/sh
+# Portable python3 shim for latexminted: prefer stable versions, avoid recursion.
+# Tries versioned interpreters first; as a last resort, tries absolute system paths.
+set -e
+self="$0"
+# Try common versioned executables (prefer <=3.13 to sidestep potential 3.14 issues)
+for cand in python3.12 python3.13 python3.11 python3.10; do
+  if command -v "$cand" >/dev/null 2>&1; then
+    exec "$cand" "$@"
+  fi
+done
+# Fallbacks to absolute paths if present
+for cand in /usr/bin/python3.12 /usr/bin/python3.13 /usr/bin/python3.11 /usr/bin/python3.10 /usr/bin/python3; do
+  if [ -x "$cand" ]; then
+    exec "$cand" "$@"
+  fi
+done
+printf "python3 interpreter not found (tried 3.12, 3.13, 3.11, 3.10)\n" 1>&2
+exit 127

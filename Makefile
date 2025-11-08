@@ -1,8 +1,8 @@
 NAME=vvedenie_v_go
 
 $(NAME).pdf: $(NAME).tex text/*.tex
-	xelatex -shell-escape -interaction=nonstopmode $(NAME).tex|tail -n 20; echo -e \\a
-	#xelatex -interaction=nonstopmode $(NAME).tex|tail -n 20; echo -e \\a
+	PATH="$(PWD)/tools/bin:$(PATH)" xelatex -shell-escape -interaction=nonstopmode $(NAME).tex|tail -n 20; echo -e \\a
+	PATH="$(PWD)/tools/bin:$(PATH)" xelatex -shell-escape -interaction=nonstopmode $(NAME).tex|tail -n 20; echo -e \\a
 
 all: $(NAME).pdf
 
