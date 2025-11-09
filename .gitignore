@@ -5,6 +5,7 @@
 *.idx
 *.ent
 *.swp
+.DS_Store
 OLD/
 /fonts/*.otf
 /fonts/*.ttf
