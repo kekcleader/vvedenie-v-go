@@ -20,9 +20,6 @@
 \raggedbottom
 
 \usemintedstyle{borland}
-\usepackage{newfloat}
-\usepackage{capt-of}
-\DeclareFloatingEnvironment[name=Листинг,fileext=lol]{listing}
 \setmonofont{Menlo}
 
 \color{gray!20!black}
@@ -202,7 +199,7 @@
   \spaceskip=1.5\fontdimen2\font plus .1em minus .1em\relax % ← шире пробел
   #1}}
 
-\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\code}[1]{{\ttfamily\footnotesize #1}}
 \newcommand{\goinline}[1]{\mintinline{go}{#1}}
 
 \maxtocdepth{subsubsection} % ToC depth
@@ -213,7 +210,7 @@
 \usepackage{hyperref}   % Internal hyperlinks
 \hypersetup{
   pdfborder={0 0 0},      % No borders around internal hyperlinks
-  pdfauthor={РФЛ} % author
+  pdfauthor={Издательство технико-теоретической литературы Рижского ОКБ Компиляторостроения} % author
 }
 \usepackage{memhfixc}   %
 
@@ -236,23 +233,24 @@
 \renewcommand{\@seccntformat}[1]{}
 \makeatother
 
-\newcommand{\binokl}{\raisebox{-0.2ex}{\includegraphics[height=0.7em]{binokl.png}}}
-
 \newminted[gocode]{go}{
   fontsize=\footnotesize,
   linenos,
   breaklines,
-  frame=lines,
-  framesep=2mm,
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{gray!60},
+  framesep=1.0mm,
+  bgcolor=gray!3,
   numbersep=8pt,
   xleftmargin=12pt
 }
 
+\newcounter{gocodecap}
 \newcommand{\gocap}[2]{%
   \Needspace{12\baselineskip}%
-  \refstepcounter{listing}% advance and make labelable
-  \noindent{\small\bfseries Листинг~\thelisting: }{\small #1}%
-  \par\vspace{3pt}%
+  \refstepcounter{gocodecap}%
+  {\vspace{10pt}\begin{adjustwidth}{12pt}{0pt}\noindent\bfseries #1\par\end{adjustwidth}\vspace{-11pt}}%
   \label{#2}%
 }
 
