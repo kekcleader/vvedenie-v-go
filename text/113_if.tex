@@ -1,0 +1,264 @@
+% !TEX root = ../vvedenie_v_go.tex
+\section{Оператор условного перехода}
+
+Занятие посвящено оператору ЕСЛИ. Го не требует заключать {\em условие} оператора \code{if} в скобки. Зато фигурные скобки вокруг {\em тела} ифа нужны всегда. Открывающую фигурную скобку «\code{\{}» можно воспринимать, поэтому, как слово \code{THEN}.
+
+Своеобразная особенность языка Го: сразу после слова \code{if} можно написать оператор присваивания или быстрое объявление (через «:=») и поставить точку с запятой. После этого как ни в чём ни бывало пишется условие. Объявленная переменная будет доступна до самого конца оператора \code{if}, то есть и в ветвях \code{else if} и \code{else}. После \code{else if} тоже можно вставлять присваивание. Объявленные таким образом переменные существуют от места их объявления до конца всего оператора \code{if}.
+
+\gocap{Оператор присваивания перед условием ифа}{lst:ifwithdefine}
+\begin{gocode}
+if c := a + b; c > 10 {
+  fmt.Println(c, "больше десяти")
+} else {
+  fmt.Println(c, "не больше десяти")
+}
+\end{gocode}
+
+Следующий фрагмент эквивалентен предыдущему, за исключением того, что область видимости переменной $c$ простирается теперь и за оператор \code{if}:
+
+\begin{gocode}
+c := a + b
+if c > 10 {
+  fmt.Println(c, "больше десяти")
+} else {
+  fmt.Println(c, "не больше десяти")
+}
+//Здесь можно написать fmt.Println(c)
+\end{gocode}
+
+\subsection{Примеры простых программ}
+
+\begin{gocode}
+package main
+
+import (
+  "fmt"
+)
+
+func example1() {
+  a := 4
+  b := 6
+
+  x := a * a + 2 * b
+  if x := a - b; x > 10 {
+    a := 234
+    fmt.Println("x is too big, x =", x, ", a =", a)
+  } else {
+    fmt.Println("x is OK, x =", x)
+  }
+
+  fmt.Println("Now x =", x, ", a =", a)
+}
+
+func example2() {
+  a := 4
+  b := 6
+
+  if x := a * a + 2 * b; x > 10 {
+    fmt.Println("x is too big, x =", x)
+  } else {
+    fmt.Println("x is OK, x =", x)
+  }
+
+  x := 123
+  _ = x
+
+  //fmt.Println("Now x =", x) // error: x undefined
+}
+
+func main() {
+  example1()
+  example2()
+}
+\end{gocode}
+
+\begin{practicetask}[Шахматы]
+Вводятся 4 натуральных числа — координаты двух клеток на шахматной доске 8 на 8 (вариант: миллион на миллион). Программа определяет, соединены ли эти клетки ходом: ладьи, короля, слона, ферзя, коня.
+
+\begin{minted}[fontsize=\footnotesize, bgcolor=gray!5, frame=single]{text}
+Введите координаты первой клетки (x, y): 1 4
+Введите координаты второй клетки (x, y): 3 6
+Ладья  не бьёт
+Король не бьёт
+Слон      бьёт
+Ферзь     бьёт
+Конь   не бьёт
+\end{minted}
+\begin{hintnote}
+Все шахматные фигуры во все стороны ходят одинаково. Кроме того, не важно, где именно на доске находятся обе клетки, а важно их взаимное расположение относительно друг друга.
+\end{hintnote}
+\begin{hintnote}
+Одну из клеток можно мысленно перенести в начало координат (разумеется, параллельно перенеся и вторую клетку). Тогда координаты первой клетки будут (0; 0) и потеряют смысл. Координаты второй клетки можно привести к неотрицательным (взять модуль). От этого ответ не изменится. В итоге получаем два неотрицательных числа, дальше уже просто.
+\end{hintnote}
+
+\end{practicetask}
+
+\gocap{Решение. «Шахматы»}{lst:chess}
+\begin{gocode}
+package main
+
+import "fmt"
+
+func main() {
+  var x1, y1, x2, y2 int
+  fmt.Println("Введите координаты первой клетки (x, y): ")
+  fmt.Scan(&x1, &y1)
+  fmt.Println("Введите координаты второй клетки (x, y): ")
+  fmt.Scan(&x2, &y2)
+
+  dx, dy := x1 - x2, y1 - y2
+  if dx < 0 { dx = -dx }
+  if dy < 0 { dy = -dy }
+
+  if dx == 0 && dy == 0 {
+    fmt.Println("Введена одна и та же клетка!")
+  } else {
+    fmt.Print("Ладья  ")
+    if dx == 0 || dy == 0 {
+      fmt.Println("   бьёт")
+    } else {
+      fmt.Println("не бьёт")
+    }
+
+    fmt.Print("Король ")
+    if dx <= 1 && dy <= 1 {
+      fmt.Println("   бьёт")
+    } else {
+      fmt.Println("не бьёт")
+    }
+
+    fmt.Print("Слон   ")
+    if dx == dy  {
+      fmt.Println("   бьёт")
+    } else {
+      fmt.Println("не бьёт")
+    }
+
+    fmt.Print("Ферзь  ")
+    if dx == 0 || dy == 0 || dx == dy {
+      fmt.Println("   бьёт")
+    } else {
+      fmt.Println("не бьёт")
+    }
+
+    fmt.Print("Конь   ")
+    if dx == 1 && dy == 2 || dx == 2 && dy == 1 {
+ // Вариант:
+ // if dx * dx + dy * dy == 5 {
+      fmt.Println("   бьёт")
+    } else {
+      fmt.Println("не бьёт")
+    }
+  }
+}
+\end{gocode}
+
+\gocap{Примеры на циклы}{lst:loops}
+\begin{gocode}
+package main
+
+import (
+  "fmt"
+)
+
+func main() {
+  fmt.Println("WHILE:")
+  i := 0
+  for i < 10 {
+    fmt.Print(i)
+    i++
+  }
+  fmt.Println(" Значение i после цикла =", i)
+  fmt.Println()
+
+  fmt.Println("FOR с пустым последействием:")
+  for i := 0; i < 5; {
+    fmt.Print(i)
+    i++
+  }
+  fmt.Println(" Значение i после цикла =", i)
+  fmt.Println()
+
+  fmt.Println("FOR:")
+  for i := 0; i < 5; i++ {
+    fmt.Print(i)
+  }
+  fmt.Println(" Значение i после цикла =", i)
+  fmt.Println()
+
+  fmt.Println("LOOP:")
+  i = 0
+  for {
+    if (i == 7) { break }
+    fmt.Print(i)
+    i++
+  }
+  fmt.Println(" Значение i после цикла =", i)
+  fmt.Println()
+
+  /*      i := 0;
+          REPEAT
+            Out.Int(i, 0);
+            INC(i)
+          UNTIL i = 8 */
+
+  fmt.Println("REPEAT:")
+  i = 0
+  for {
+    fmt.Print(i)
+    i++
+    if (i == 8) { break }
+  }
+  fmt.Println(" Значение i после цикла =", i)
+  fmt.Println()
+
+  fmt.Println("FOR INTEGER RANGE:")
+  //for j := 0; j < 10; j++ {
+  for j := range i {
+    fmt.Print(j)
+  }
+  fmt.Println()
+
+  fmt.Println("Slice:")
+  // s is a slice
+  s := []int{22, 0, 77, 44, 19, 123, 6, 11, 23}
+  for i, x := range s {
+    fmt.Println(i, x)
+  }
+
+}
+\end{gocode}
+
+\gocap{Примеры на срезы (начало)}{lst:slices}
+\begin{gocode}
+package main
+
+import (
+  "fmt"
+)
+
+func main() {
+  // m is an array of 9 integers
+  m := [...]int{22, 0, 77, 44, 19, 123, 6, 11, 23}
+
+  // x is a slice that points to m[2], length=6-2=4
+  x := m[2:6]
+
+  fmt.Println("m:", m, len(m))
+  fmt.Println("x:", x, len(x), cap(x))
+
+  // If there is enough space in the underlying array,
+  // then items are replaced in the array. Otherwise,
+  // a new larger (unnamed) array is created.
+  x = append(x, -47, -48) // There is space for 2 items
+  x = append(x, -49, -50) // And now - not enough space
+
+  fmt.Println("After x = append(x, ....):")
+  fmt.Println("x:", x, len(x), cap(x))
+  fmt.Println("m:", m, len(m))
+
+  // Point to x[1]. x[0] is unreachable forever
+  x = x[1:cap(x)]
+  fmt.Println("массив под слайсом:", x[0:cap(x)])
+}
+\end{gocode}

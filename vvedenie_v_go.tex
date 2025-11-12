@@ -5,6 +5,7 @@
 
 \usepackage[greek,english,main=russian]{babel}
 \usepackage[final]{microtype} % Less badboxes
+\usepackage[most]{tcolorbox}
 \usepackage{xcolor}
 \usepackage{fontspec}
 \usepackage{bookmark}
@@ -233,6 +234,9 @@
 \renewcommand{\@seccntformat}[1]{}
 \makeatother
 
+\BeforeBeginEnvironment{minted}{\vspace{-0.6\baselineskip}}
+\AfterEndEnvironment{minted}{\vspace{-0.8\baselineskip}}
+
 \newminted[gocode]{go}{
   fontsize=\footnotesize,
   linenos,
@@ -250,7 +254,7 @@
 \newcommand{\gocap}[2]{%
   \Needspace{12\baselineskip}%
   \refstepcounter{gocodecap}%
-  {\vspace{10pt}\begin{adjustwidth}{12pt}{0pt}\noindent\bfseries #1\par\end{adjustwidth}\vspace{-11pt}}%
+  {\vspace{2pt}\begin{adjustwidth}{12pt}{0pt}\noindent\bfseries #1\par\end{adjustwidth}\vspace{-5pt}}%
   \label{#2}%
 }
 
@@ -265,6 +269,42 @@
 \let\numberline\oldnl% % restore orginal \numberline
 \oldcftspn} % use original \cftsectionafterpnum
 \settocdepth{subsection}
+
+% Счётчик подсказок
+\newcounter{hint}
+
+% Оформление блока "Задание на практику"
+\definecolor{practicebg}{RGB}{245,245,250}
+\newtcolorbox{practicetask}[1][]{
+  colback=practicebg,
+  colframe=black!50,
+  sharp corners,
+  boxrule=0.4pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,
+  title={\bfseries Задание на практику\ifx&#1&\else. #1\fi},
+  before upper=\setcounter{hint}{0}%
+}
+
+% Оформление блока "Задания на практику"
+\newtcolorbox{practicetasks}{
+  colback=practicebg,
+  colframe=black!30,
+  sharp corners,
+  boxrule=0.4pt,
+  left=8pt,right=8pt,top=6pt,bottom=6pt,
+  title={\bfseries Задания на практику},
+  before upper=\setcounter{hint}{0}%
+}
+
+\newenvironment{hintnote}{
+  \par\vspace{0.5\baselineskip}% отступ сверху
+  \refstepcounter{hint}% ← увеличиваем и активируем счётчик
+  \noindent\leftskip=1.5em
+  \rightskip=1em
+  {\em Подсказка~\thehint.}\enspace
+}{
+  \par\vspace{0.3\baselineskip}% отступ снизу
+}
 
 \AtBeginDocument{
   \fontsize{10.5pt}{13.7pt}\selectfont
@@ -304,6 +344,9 @@
 
 \mainmatter
 
-\include{text/text.tex}
+\include{text/111_vstuplenie.tex}
+\include{text/112_struktura.tex}
+\include{text/113_if.tex}
+\include{text/114_vars.tex}
 
 \end{document}
